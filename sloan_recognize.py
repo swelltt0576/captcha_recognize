@@ -12,7 +12,8 @@ import numpy as np
 
 import tensorflow as tf
 from tensorflow.python.platform import gfile
-import captcha_model as captcha
+# import captcha_model as captcha
+import sloan_model as captcha
 
 import config
 
@@ -32,6 +33,16 @@ def one_hot_to_texts(recog_result):
         index = recog_result[i]
         texts.append(''.join([CHAR_SETS[i] for i in index]))
     return texts
+
+
+def input_image(image_path):
+    image = Image.open(image_path)
+    image_gray = image.convert('L')
+    image_resize = image_gray.resize(size=(IMAGE_WIDTH, IMAGE_HEIGHT))
+    image.close()
+    input_img = np.array(image_resize, dtype='float32')
+    input_img = np.multiply(input_img.flatten(), 1. / 255) - 0.5
+    return np.reshape(input_img, (IMAGE_HEIGHT, IMAGE_WIDTH, 1))
 
 
 def input_data(image_dir):
@@ -67,26 +78,22 @@ def input_data(image_dir):
 
 def run_predict():
     with tf.Graph().as_default(), tf.device('/cpu:0'):
-        input_images, input_filenames = input_data(FLAGS.captcha_dir)
-        images = tf.constant(input_images)
-        logits = captcha.inference(images, keep_prob=1)
+        X = tf.placeholder(tf.float32, [None, IMAGE_HEIGHT, IMAGE_WIDTH, 1])  # 特征向量
+        input_image1 = input_image(FLAGS.captcha_dir+'/7659_num86.png')
+        input_image2 = input_image(FLAGS.captcha_dir+'/8362_num83.png')
+        logits = captcha.test(X, keep_prob=1)
         result = captcha.output(logits)
         saver = tf.train.Saver()
         sess = tf.Session()
         saver.restore(sess, tf.train.latest_checkpoint(FLAGS.checkpoint_dir))
         print(tf.train.latest_checkpoint(FLAGS.checkpoint_dir))
-        recog_result = sess.run(result)
+        recog_result1 = sess.run(result, feed_dict={X: [input_image1]})
+        recog_result2 = sess.run(result, feed_dict={X: [input_image2]})
         sess.close()
-        text = one_hot_to_texts(recog_result)
-        total_count = len(input_filenames)
-        true_count = 0.
-        for i in range(total_count):
-            print('image ' + input_filenames[i] + " recognize ----> '" + text[i] + "'")
-            if text[i] in input_filenames[i]:
-                true_count += 1
-        precision = true_count / total_count
-        print('%s true/total: %d/%d recognize @ 1 = %.3f'
-              % (datetime.now(), true_count, total_count, precision))
+        text = one_hot_to_texts(recog_result1)
+        text2 = one_hot_to_texts(recog_result2)
+        print(text)
+        print(text2)
 
 
 def main(_):
@@ -104,7 +111,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--captcha_dir',
         type=str,
-        default='./data/test_data',
+        default='./data/test1',
         help='Directory where to get captcha images.'
     )
     FLAGS, unparsed = parser.parse_known_args()

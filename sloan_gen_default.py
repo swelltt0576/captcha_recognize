@@ -14,18 +14,18 @@ IMAGE_HEIGHT = config.IMAGE_HEIGHT
 IMAGE_WIDTH = config.IMAGE_WIDTH
 CHARS_NUM = config.CHARS_NUM
 
-TEST_SIZE = 1000
-TRAIN_SIZE = 50000
-VALID_SIZE = 20000
+TEST_SIZE = 100
+TRAIN_SIZE = 5000
+VALID_SIZE = 200
 
 FLAGS = None
 
 def gen(gen_dir, total_size, chars_num):
   if not os.path.exists(gen_dir):
     os.makedirs(gen_dir)
-  image = ImageCaptcha(width=IMAGE_WIDTH, height=IMAGE_HEIGHT,font_sizes=[40])
+  image = ImageCaptcha(width=IMAGE_WIDTH*2, height=IMAGE_HEIGHT*2,font_sizes=[40])
   # must be subset of config.CHAR_SETS
-  char_sets = 'ABCDEFGHIJKLMNPQRSTUVWXYZ'
+  char_sets = config.CHAR_SETS
   for i in xrange(total_size):
     label = ''.join(random.sample(char_sets, chars_num))
     image.write(label, os.path.join(gen_dir, label+'_num'+str(i)+'.png'))
