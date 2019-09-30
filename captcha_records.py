@@ -54,13 +54,13 @@ def conver_to_tfrecords(data_set, name):
     filename = os.path.join(RECORD_DIR, name)
     print('>> Writing', filename)
     writer = tf.python_io.TFRecordWriter(filename)
-    num_examples = len(data_set)
-    for index in range(num_examples):
-        image = data_set[index][0]
+    # num_examples = len(data_set)
+    for row in list(data_set):
+        image = row[0]
         height = image.shape[0]
         width = image.shape[1]
         image_raw = image.tostring()
-        label = data_set[index][1]
+        label = row[1]
         label_raw = label_to_one_hot(label).tostring()
         example = tf.train.Example(features=tf.train.Features(feature={
             'height': _int64_feature(height),

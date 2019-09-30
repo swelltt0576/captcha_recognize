@@ -29,7 +29,7 @@ FLAGS = None
 
 def one_hot_to_texts(recog_result):
     texts = []
-    for i in xrange(recog_result.shape[0]):
+    for i in range(recog_result.shape[0]):
         index = recog_result[i]
         texts.append(''.join([CHAR_SETS[i] for i in index]))
     return texts
@@ -79,8 +79,8 @@ def input_data(image_dir):
 def run_predict():
     with tf.Graph().as_default(), tf.device('/cpu:0'):
         X = tf.placeholder(tf.float32, [None, IMAGE_HEIGHT, IMAGE_WIDTH, 1])  # 特征向量
-        input_image1 = input_image(FLAGS.captcha_dir+'/7659_num86.png')
-        input_image2 = input_image(FLAGS.captcha_dir+'/8362_num83.png')
+        input_image1 = input_image(FLAGS.captcha_dir+'/0125_num4281.png')
+        input_image2 = input_image(FLAGS.captcha_dir+'/0126_num772.png')
         logits = captcha.test(X, keep_prob=1)
         result = captcha.output(logits)
         saver = tf.train.Saver()
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--captcha_dir',
         type=str,
-        default='./data/test1',
+        default='./data/test_data',
         help='Directory where to get captcha images.'
     )
     FLAGS, unparsed = parser.parse_known_args()

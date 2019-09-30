@@ -38,7 +38,7 @@ def run_train():
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
     try:
       step = 0
-      while not coord.should_stop():
+      while not coord.should_stop() and step <= 20000:
         start_time = time.time()
         _, loss_value = sess.run([train_op, loss])
         duration = time.time() - start_time

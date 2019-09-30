@@ -9,7 +9,7 @@ import argparse
 import sys
 
 import numpy as np
-from six.moves import xrange 
+from six.moves import range
 import tensorflow as tf
 import captcha_model as captcha
 
@@ -44,7 +44,7 @@ def run_train():
     opt = tf.train.AdamOptimizer(1e-4)
     tower_grads = []
     with tf.variable_scope(tf.get_variable_scope()):
-      for i in xrange(FLAGS.num_gpus):
+      for i in range(FLAGS.num_gpus):
         with tf.device('/gpu:%d' % i):
           with tf.name_scope('tower_%d' % (i)) as scope:
             loss = tower_loss(scope, keep_prob=0.5)
@@ -62,7 +62,7 @@ def run_train():
     
     sess.run(init)
     tf.train.start_queue_runners(sess=sess)
-    for step in xrange(FLAGS.max_steps):
+    for step in range(FLAGS.max_steps):
       start_time = time.time()
       _, loss_value = sess.run([train_op, loss])
       duration = time.time() - start_time

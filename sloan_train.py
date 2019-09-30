@@ -48,7 +48,7 @@ def run_train():
         threads = tf.train.start_queue_runners(sess=sess, coord=coord)
         try:
             step = 0
-            while not coord.should_stop():
+            while not coord.should_stop() and step<20000:
                 start_time = time.time()
                 imgs = images.eval(session=sess)
                 labs = labels.eval(session=sess)
