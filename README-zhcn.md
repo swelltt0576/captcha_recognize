@@ -1,3 +1,14 @@
+使用后评价
+====
+
+* 在图片训练了2000步时，日志显示“损失”loss一直在2.3左右，无法进一步降低
+    - 即使运行了一个晚上，大约12小时，（step>5000），仍然无法缩小；且训练程序无法自行结束
+* 使用中断后的训练结果测试数据：
+    - 新生成的eval和test图片都无法识别成功
+    - 老的作为训练数据的train_data也无法识别成功
+    - 判断：随机生成的验证码无法在这个规模的训练集中，发现特征
+    - 判断：用来整体识别验证码，不太可能；如果可以通过图片处理，分割出单个字符，则可能实现这个识别
+
 介绍
 ====
 ### 其他语言： [English](https://github.com/PatrickLib/captcha_recognize/blob/master/README.md) [中文](https://github.com/PatrickLib/captcha_recognize/blob/master/README-zhcn.md)
